@@ -34,6 +34,7 @@ class MainActivity : AppCompatActivity() {
                     text = "Default"
                 }
             }
+        }
         switch2.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 val textView = findViewById<TextView>(R.id.textView3).apply {
@@ -43,11 +44,13 @@ class MainActivity : AppCompatActivity() {
                     text = "okay"
                 }
             } else {
+                val textView = findViewById<TextView>(R.id.textView3).apply {
+                    text = "Default"
+                }
                 val textView2 = findViewById<TextView>(R.id.textView4).apply {
                     text = "Default"
                 }
             }}
-        }
     }
 
     fun moveToNextView(view: View) {
