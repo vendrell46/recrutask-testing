@@ -1,7 +1,7 @@
 package com.example.recrutask.automation
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
@@ -75,5 +75,19 @@ class ExampleInstrumentedTest : TestSetup() {
 
         onView(moveBtn).perform(click())
         onView(textId).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun testEditedTextDisplayedInNextPage() {
+        val passwordTextField = withId(R.id.editTextTextPassword)
+        val moveBtn = withId(R.id.button)
+        val textId = withId(R.id.textView2)
+        val newPassword = "Hopin"
+
+        onView(passwordTextField).perform(clearText())
+        onView(passwordTextField).perform(typeText(newPassword))
+
+        onView(moveBtn).perform(click())
+        onView(textId).check(matches(withText(newPassword)))
     }
 }
