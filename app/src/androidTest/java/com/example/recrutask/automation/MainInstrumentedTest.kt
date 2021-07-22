@@ -15,7 +15,7 @@ private const val DEFAULT = "Default"
 private const val OKAY = "okay"
 
 @HiltAndroidTest
-class ExampleInstrumentedTest : TestSetup() {
+class MainInstrumentedTest : TestSetup() {
 
     @get:Rule
     val activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
