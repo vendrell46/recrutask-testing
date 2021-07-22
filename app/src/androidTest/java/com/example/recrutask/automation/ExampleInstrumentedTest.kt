@@ -67,4 +67,13 @@ class ExampleInstrumentedTest : TestSetup() {
         onView(firstLabel).check(matches(withText(DEFAULT)))
         onView(secondLabel).check(matches(withText(DEFAULT)))
     }
+
+    @Test
+    fun testNewScreenDisplayedOnMoveButtonTap() {
+        val moveBtn = withId(R.id.button)
+        val textId = withId(R.id.textView2)
+
+        onView(moveBtn).perform(click())
+        onView(textId).check(matches(isDisplayed()))
+    }
 }
