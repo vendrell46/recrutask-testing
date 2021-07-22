@@ -1,93 +1,79 @@
 package com.example.recrutask.automation
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.example.recrutask.MainActivity
-import com.example.recrutask.R
+import com.example.recrutask.automation.mainPage.MainPageActions
+import com.example.recrutask.automation.movePage.MovePageActions
 import com.example.recrutask.core.TestSetup
-import org.hamcrest.CoreMatchers.not
+import dagger.hilt.android.testing.HiltAndroidTest
 
 import org.junit.Test
 import org.junit.Rule
+import javax.inject.Inject
 
 private const val DEFAULT = "Default"
 private const val OKAY = "okay"
 
+@HiltAndroidTest
 class ExampleInstrumentedTest : TestSetup() {
 
     @get:Rule
-    val activityRule: ActivityScenarioRule<MainActivity>
-            = ActivityScenarioRule(MainActivity::class.java)
+    val activityRule: ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
+
+    @Inject
+    lateinit var mainPageActions: MainPageActions
+    @Inject
+    lateinit var movePageActions: MovePageActions
 
     @Test
     fun testHopinNotDisplayedOnFirstCheckField() {
-        val passwordNotExpected = "Hopin"
-        val firstCheckPasswordField = withId(R.id.editTextTextPassword)
-
-        onView(firstCheckPasswordField).check(matches(not(withText(passwordNotExpected))))
+        mainPageActions.validatePasswordFieldText()
     }
 
     @Test
     fun testFirstToggleChangesLabelsTextOnTap() {
-        val firstToggle = withId(R.id.toggleButton)
-        val firstLabel = withId(R.id.textView3)
-        val secondLabel = withId(R.id.textView4)
+       mainPageActions.apply {
+            clickOnFirstToggle()
+            validateFirstToggleIsChecked()
 
-        onView(firstToggle).perform(click())
-        onView(firstToggle).check(matches(isChecked()))
+            validateLabelsText(OKAY)
 
-        onView(firstLabel).check(matches(withText(OKAY)))
-        onView(secondLabel).check(matches(withText(OKAY)))
+            clickOnFirstToggle()
+            validateFirstToggleIsNotChecked()
 
-        onView(firstToggle).perform(click())
-        onView(firstToggle).check(matches(not(isChecked())))
-
-        onView(firstLabel).check(matches(withText(DEFAULT)))
-        onView(secondLabel).check(matches(withText(DEFAULT)))
+            validateLabelsText(DEFAULT)
+        }
     }
 
     @Test
     fun testSecondToggleChangesLabelsTextOnTap() {
-        val secondToggle = withId(R.id.toggleButton2)
-        val firstLabel = withId(R.id.textView3)
-        val secondLabel = withId(R.id.textView4)
+        mainPageActions.apply {
+            clickOnSecondToggle()
+            validateSecondToggleIsChecked()
 
-        onView(secondToggle).perform(click())
-        onView(secondToggle).check(matches(isChecked()))
+            validateLabelsText(OKAY)
 
-        onView(firstLabel).check(matches(withText(OKAY)))
-        onView(secondLabel).check(matches(withText(OKAY)))
+            clickOnSecondToggle()
+            validateSecondToggleIsNotChecked()
 
-        onView(secondToggle).perform(click())
-        onView(secondToggle).check(matches(not(isChecked())))
-
-        onView(firstLabel).check(matches(withText(DEFAULT)))
-        onView(secondLabel).check(matches(withText(DEFAULT)))
+            validateLabelsText(DEFAULT)
+        }
     }
 
     @Test
     fun testNewScreenDisplayedOnMoveButtonTap() {
-        val moveBtn = withId(R.id.button)
-        val textId = withId(R.id.textView2)
-
-        onView(moveBtn).perform(click())
-        onView(textId).check(matches(isDisplayed()))
+        mainPageActions.clickOnMoveButton()
+        movePageActions.validateMoveScreenDisplayed()
     }
 
     @Test
     fun testEditedTextDisplayedInNextPage() {
-        val passwordTextField = withId(R.id.editTextTextPassword)
-        val moveBtn = withId(R.id.button)
-        val textId = withId(R.id.textView2)
         val newPassword = "Hopin"
 
-        onView(passwordTextField).perform(clearText())
-        onView(passwordTextField).perform(typeText(newPassword))
-
-        onView(moveBtn).perform(click())
-        onView(textId).check(matches(withText(newPassword)))
+        mainPageActions.apply {
+            enterTextInFirstCheckField(newPassword)
+            clickOnMoveButton()
+        }
+        movePageActions.validateTextDisplayed(newPassword)
     }
 }
